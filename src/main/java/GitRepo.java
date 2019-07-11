@@ -40,11 +40,8 @@ public class GitRepo {
         RevWalk walk = new RevWalk(repo);
         newCommit = walk.parseCommit(repo.resolve(hashID));
         RevCommit prevCommit = getPrevHash(newCommit);
-        System.out.println(prevCommit);
-        System.out.println("LogCommit: " + newCommit);
-       // System.out.println("Prv Commit: "+prevCommit);
         String logMessage = newCommit.getFullMessage();
-        System.out.println("LogMessage: " + logMessage);
+
         //Print diff of the commit with the previous one.
         return getChangedFiles(newCommit,prevCommit);
 
@@ -59,14 +56,10 @@ public class GitRepo {
             Map.Entry<String, String> entry = itr.next();
             String file_name = entry.getKey();
             String file_content = getFileOfCommit(repo,prevCommit,file_name);
-            if (file_content==null){
-                System.out.println(file_name);
+            if (file_content!=null) {
+                Pair<String, String> p = new Pair<>(file_content, entry.getValue());
+                fil_changes.put(file_name, p);
             }
-            else{
-                System.out.println("FINE");
-            }
-            Pair<String,String> p =  new Pair<>(file_content,entry.getValue());
-            fil_changes.put(file_name,p);
         }
         return fil_changes;
     }
@@ -101,6 +94,7 @@ public class GitRepo {
             if(pathString.endsWith(".py")) {
                 final String fileName = pathString;
                 files.put(fileName,getFileContent(repo,treeWalk));
+
             }
         }
         return files;
